@@ -6,7 +6,6 @@ public class Board implements Serializable {
     public static final int ROWS = 6;
     public static final int COLS = 7;
 
-    // 0 = empty, 1 = player 1, 2 = player 2
     private int[][] grid = new int[ROWS][COLS];
 
     public Board() {
@@ -38,10 +37,7 @@ public class Board implements Serializable {
         return true;
     }
 
-    /**
-     * Drops a piece for player into column.
-     * @return row index where it landed, or -1 if column is full
-     */
+
     public int dropPiece(int player, int col) {
         if (col < 0 || col >= COLS) return -1;
 
@@ -55,7 +51,7 @@ public class Board implements Serializable {
     }
 
     public boolean checkWin(int player) {
-        // horizontal
+
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c <= COLS - 4; c++) {
                 if (grid[r][c] == player && grid[r][c + 1] == player &&
@@ -65,7 +61,6 @@ public class Board implements Serializable {
             }
         }
 
-        // vertical
         for (int c = 0; c < COLS; c++) {
             for (int r = 0; r <= ROWS - 4; r++) {
                 if (grid[r][c] == player && grid[r + 1][c] == player &&
@@ -75,7 +70,6 @@ public class Board implements Serializable {
             }
         }
 
-        // diagonal down-right
         for (int r = 0; r <= ROWS - 4; r++) {
             for (int c = 0; c <= COLS - 4; c++) {
                 if (grid[r][c] == player && grid[r + 1][c + 1] == player &&
@@ -85,7 +79,6 @@ public class Board implements Serializable {
             }
         }
 
-        // diagonal up-right
         for (int r = 3; r < ROWS; r++) {
             for (int c = 0; c <= COLS - 4; c++) {
                 if (grid[r][c] == player && grid[r - 1][c + 1] == player &&
