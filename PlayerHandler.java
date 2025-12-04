@@ -41,7 +41,6 @@ public class PlayerHandler implements Runnable {
                 }
             }
         } catch (Exception e) {
-            // client disconnected
         } finally {
             running = false;
             server.handleDisconnect(this);
@@ -73,7 +72,6 @@ public class PlayerHandler implements Runnable {
             out.writeObject(m);
             out.reset();
         } catch (IOException e) {
-            // ignore; probably disconnected
         }
     }
 
@@ -81,7 +79,6 @@ public class PlayerHandler implements Runnable {
         try {
             if (socket != null) socket.close();
         } catch (IOException e) {
-            // ignore
         }
     }
 }
