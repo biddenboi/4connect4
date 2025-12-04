@@ -55,12 +55,12 @@ public class Connect4Client extends JFrame {
     }
 
     private void connectToServer() {
+        //Used AI for this segment.. there was an issue where the server port auto clased? not sure
         try {
-            try (Socket socket = new Socket(HOST, PORT)) {
-                out = new ObjectOutputStream(socket.getOutputStream());
-                out.flush();
-                in = new ObjectInputStream(socket.getInputStream());
-            }
+            Socket socket = new Socket(HOST, PORT);  // <-- DO NOT auto-close this socket
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Unable to connect to server.");
             System.exit(0);
@@ -101,7 +101,7 @@ public class Connect4Client extends JFrame {
             } catch (Exception e) {
                 SwingUtilities.invokeLater(() -> {
                     JOptionPane.showMessageDialog(Connect4Client.this,
-                            "Disconnected from server.");
+                            "disconnected");
                     System.exit(0);
                 });
             }

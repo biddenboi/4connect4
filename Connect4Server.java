@@ -16,15 +16,15 @@ public class Connect4Server {
 
     public void startServer() {
         try {
-            System.out.println("Server starting on port 8000...");
+            System.out.println("server start");
             try (ServerSocket serverSocket = new ServerSocket(8000)) {
                 Socket p1Socket = serverSocket.accept();
-                System.out.println("Player 1 connected.");
+                System.out.println("p1c");
                 player1 = new PlayerHandler(this, p1Socket, 1);
                 new Thread(player1).start();
 
                 Socket p2Socket = serverSocket.accept();
-                System.out.println("Player 2 connected.");
+                System.out.println("p2c");
                 player2 = new PlayerHandler(this, p2Socket, 2);
             }
 
@@ -66,12 +66,11 @@ public class Connect4Server {
 
         board.dropPiece(currentPlayer, column);
 
-        // Check win / tie
         if (board.checkWin(currentPlayer)) {
             gameOver = true;
             Message m = new Message("GAME_OVER");
             m.board = board;
-            m.currentPlayer = currentPlayer; // winner
+            m.currentPlayer = currentPlayer; 
             m.text = "Player " + currentPlayer + " wins!";
             broadcast(m);
             return;
@@ -86,7 +85,7 @@ public class Connect4Server {
             return;
         }
 
-        // Switch player
+        //MARK SWITCH PLAYER MOVE
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
         broadcastState("Player " + currentPlayer + "'s turn.");
     }
@@ -113,7 +112,6 @@ public class Connect4Server {
         PlayerHandler other = (whoDisconnected == player1) ? player2 : player1;
         if (other == null) return;
 
-        // Inform other player and countdown
         try {
             Message info = new Message("OPPONENT_DISCONNECTED");
             info.text = "Your opponent disconnected. Closing in 5 seconds.";
@@ -134,7 +132,6 @@ public class Connect4Server {
             other.close();
 
         } catch (Exception e) {
-            // ignore
         }
     }
 
