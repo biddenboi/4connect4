@@ -157,7 +157,7 @@ public class Connect4Client extends JFrame {
 
         public void paint(Graphics g) {
             super.paint(g);
-            g.setColor(new Color(255, 255, 102)); // bright yellow background
+            g.setColor(new Color(0, 0, 102)); 
             g.fillRect(0, 0, getWidth(), getHeight());
 
             int rows = Board.ROWS;

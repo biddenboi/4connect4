@@ -84,12 +84,12 @@ public class Connect4Server {
 
         //MARK SWITCH PLAYER MOVE
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
-        broadcastState("Player " + currentPlayer + "'s turn.");
+        broadcastState("Player " + currentPlayer + "'s turn");
     }
 
     public synchronized void handleRestartRequest(PlayerHandler player) {
         if (!gameOver) {
-            player.sendInfo("You can only restart after the game is over.");
+            player.sendInfo("You can only restart after the game is over");
             return;
         }
         board.clear();
@@ -99,7 +99,7 @@ public class Connect4Server {
         Message m = new Message("RESTART");
         m.board = board;
         m.currentPlayer = currentPlayer;
-        m.text = "Game restarted. Player 1 goes first.";
+        m.text = "Game restarted. Player 1 goes first";
         broadcast(m);
     }
 
@@ -117,13 +117,13 @@ public class Connect4Server {
             for (int i = 5; i >= 1; i--) {
                 Message countdown = new Message("COUNTDOWN");
                 countdown.countdown = i;
-                countdown.text = "Closing in " + i + " seconds...";
+                countdown.text = "(Game Disconnect) Closing in " + i + " seconds";
                 other.send(countdown);
                 Thread.sleep(1000);
             }
 
             Message finalMsg = new Message("INFO");
-            finalMsg.text = "Server closing connection.";
+            finalMsg.text = "closing connection";
             other.send(finalMsg);
 
             other.close();
