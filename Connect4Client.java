@@ -15,6 +15,7 @@ public class Connect4Client extends JFrame {
     private Board board = new Board();
     private BoardPanel boardPanel;
     private JLabel statusLabel;
+    private JLabel messageLabel;
     private JButton restartButton;
 
     private int myPlayerNumber = 0;
@@ -33,6 +34,7 @@ public class Connect4Client extends JFrame {
     private void setupGUI() {
         boardPanel = new BoardPanel();
         statusLabel = new JLabel("Connecting...", JLabel.CENTER);
+        messageLabel = new JLabel("", JLabel.CENTER);
         restartButton = new JButton("Restart");
 
         restartButton.addActionListener(new ActionListener() {
@@ -40,7 +42,7 @@ public class Connect4Client extends JFrame {
                 if (gameOver) {
                     sendRestartRequest();
                 } else {
-                    JOptionPane.showMessageDialog(null, "You can only restart after the game is over.");
+                    messageLabel.setText("You can only restart after the game is over.");
                 }
             }
         });
@@ -49,6 +51,7 @@ public class Connect4Client extends JFrame {
         add(statusLabel, BorderLayout.SOUTH);
         add(boardPanel, BorderLayout.CENTER);
         add(restartButton, BorderLayout.NORTH);
+        add(messageLabel, BorderLayout.PAGE_START);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 600);
@@ -63,7 +66,7 @@ public class Connect4Client extends JFrame {
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Unable to connect to server.");
+            messageLabel.setText("Unable to connect to server.");
             System.exit(0);
         }
     }
@@ -94,7 +97,7 @@ public class Connect4Client extends JFrame {
                     handleMessage(msg);
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Disconnected from server.");
+                messageLabel.setText("Disconnected from server.");
                 System.exit(0);
             }
         }
@@ -103,49 +106,44 @@ public class Connect4Client extends JFrame {
     private void handleMessage(Message msg) {
         if (msg.type.equals("WELCOME")) {
             myPlayerNumber = msg.currentPlayer;
-            statusLabel.setText(msg.text);
+            statusLabel.setText("Connected.");
+            messageLabel.setText(msg.text);
         } else if (msg.type.equals("STATE")) {
             board = msg.board;
             currentPlayer = msg.currentPlayer;
             gameOver = false;
             myTurn = (currentPlayer == myPlayerNumber);
-            statusLabel.setText(msg.text + " You are Player " + myPlayerNumber + ".");
+            messageLabel.setText(msg.text + " You are Player " + myPlayerNumber + ".");
             boardPanel.repaint();
         } else if (msg.type.equals("INVALID_MOVE")) {
-            JOptionPane.showMessageDialog(this, msg.text);
+            messageLabel.setText(msg.text);
         } else if (msg.type.equals("INFO")) {
-            statusLabel.setText(msg.text);
+            messageLabel.setText(msg.text);
         } else if (msg.type.equals("GAME_OVER")) {
             board = msg.board;
             boardPanel.repaint();
             gameOver = true;
             myTurn = false;
-            if (msg.currentPlayer == myPlayerNumber) {
-                JOptionPane.showMessageDialog(this, "You win!");
-            } else {
-                JOptionPane.showMessageDialog(this, "You lose. " + msg.text);
-            }
-            statusLabel.setText(msg.text + " Press restart to play again.");
+            messageLabel.setText((msg.currentPlayer == myPlayerNumber ? "You win!" : "You lose. ") + msg.text + " Press restart to play again.");
         } else if (msg.type.equals("TIE")) {
             board = msg.board;
             boardPanel.repaint();
             gameOver = true;
             myTurn = false;
-            JOptionPane.showMessageDialog(this, "It's a tie.");
-            statusLabel.setText("Tie game. Press restart to play again.");
+            messageLabel.setText("It's a tie. Press restart to play again.");
         } else if (msg.type.equals("RESTART")) {
             board = msg.board;
             boardPanel.repaint();
             gameOver = false;
             currentPlayer = msg.currentPlayer;
             myTurn = (currentPlayer == myPlayerNumber);
-            statusLabel.setText(msg.text + " You are Player " + myPlayerNumber + ".");
+            messageLabel.setText(msg.text + " You are Player " + myPlayerNumber + ".");
         } else if (msg.type.equals("OPPONENT_DISCONNECTED")) {
             gameOver = true;
             myTurn = false;
-            statusLabel.setText(msg.text);
+            messageLabel.setText(msg.text);
         } else if (msg.type.equals("COUNTDOWN")) {
-            statusLabel.setText(msg.text);
+            messageLabel.setText(msg.text);
         }
     }
 
@@ -159,7 +157,7 @@ public class Connect4Client extends JFrame {
 
         public void paint(Graphics g) {
             super.paint(g);
-            g.setColor(new Color(50, 90, 130));
+            g.setColor(new Color(255, 255, 102)); // bright yellow background
             g.fillRect(0, 0, getWidth(), getHeight());
 
             int rows = Board.ROWS;
@@ -175,9 +173,9 @@ public class Connect4Client extends JFrame {
                     int y = startY + r * (DIAMETER + PADDING);
                     int cell = board.getCell(r, c);
 
-                    if (cell == 0) g.setColor(Color.BLACK);
+                    if (cell == 0) g.setColor(Color.WHITE);
                     else if (cell == 1) g.setColor(Color.RED);
-                    else g.setColor(Color.YELLOW);
+                    else g.setColor(Color.BLUE);
 
                     g.fillOval(x, y, DIAMETER, DIAMETER);
                 }

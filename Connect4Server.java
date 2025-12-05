@@ -30,11 +30,9 @@ public class Connect4Server {
 
             new Thread(player2).start();
 
-            // Send welcome messages
             player1.sendWelcome();
             player2.sendWelcome();
 
-            // Send initial state
             broadcastState("Player 1's turn.");
 
         } catch (IOException e) {
@@ -42,7 +40,6 @@ public class Connect4Server {
         }
     }
 
-    // Called by a PlayerHandler when a move is made
     public synchronized void handleMove(PlayerHandler player, int column) {
         if (gameOver) {
             player.sendInfo("Game is over. Press restart.");
